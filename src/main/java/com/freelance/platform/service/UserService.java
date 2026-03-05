@@ -71,4 +71,13 @@ public class UserService {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
+
+    @Transactional
+    public void delete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+        userRepository.delete(user);
+    }
+
 }
