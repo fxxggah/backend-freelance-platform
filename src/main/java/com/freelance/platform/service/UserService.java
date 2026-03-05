@@ -5,6 +5,7 @@ import com.freelance.platform.domain.repository.UserRepository;
 import com.freelance.platform.dto.request.RegisterRequest;
 import com.freelance.platform.dto.response.UserResponse;
 import com.freelance.platform.exception.ResourceAlreadyExistsException;
+import com.freelance.platform.exception.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,12 +44,12 @@ public class UserService {
 
     public User getEntityById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
     public User getEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 
     public UserResponse getById(Long id) {

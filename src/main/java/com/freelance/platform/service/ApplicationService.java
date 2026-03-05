@@ -33,7 +33,7 @@ public class ApplicationService {
         User freelancer = userService.getEntityById(freelancerId);
 
         if (applicationRepository.findByJobIdAndFreelancerId(jobId, freelancerId).isPresent()) {
-            throw new BusinessException("Você já se candidatei a este job");
+            throw new BusinessException("Você já se candidatou a este job");
         }
 
         Application application = Application.builder()
@@ -83,4 +83,13 @@ public class ApplicationService {
                 .createdAt(application.getCreatedAt())
                 .build();
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Application não encontrada"));
+
+        applicationRepository.delete(application);
+    }
+
 }

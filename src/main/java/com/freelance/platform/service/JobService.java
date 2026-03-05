@@ -85,4 +85,13 @@ public class JobService {
                 .applicationCount(job.getApplications() != null ? job.getApplications().size() : 0)
                 .build();
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Job não encontrado"));
+
+        jobRepository.delete(job);
+    }
+
 }

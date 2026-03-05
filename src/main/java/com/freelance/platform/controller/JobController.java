@@ -43,7 +43,14 @@ public class JobController {
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<JobResponse> updateStatus(@PathVariable Long id,
-                                                    @RequestParam JobStatus status) {
-        return ResponseEntity.ok(jobService.updateStatus(id, status));
+                                                    @RequestParam String status) { // Mude de JobStatus para String
+        return ResponseEntity.ok(jobService.updateStatus(id, JobStatus.valueOf(status.toUpperCase())));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        jobService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
