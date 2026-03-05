@@ -34,4 +34,10 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getAllFreelancers() {
         return ResponseEntity.ok(userService.getAllFreelancers());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
