@@ -52,6 +52,7 @@ public class AuthController {
                 .userId(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .role(user.getUserType().name())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

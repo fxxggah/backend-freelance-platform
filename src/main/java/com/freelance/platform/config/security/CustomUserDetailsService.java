@@ -2,7 +2,6 @@ package com.freelance.platform.config.security;
 
 import com.freelance.platform.domain.model.User;
 import com.freelance.platform.domain.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
