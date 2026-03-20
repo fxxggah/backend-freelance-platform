@@ -42,14 +42,14 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getById(id));
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @Operation(summary = "Listar todos os freelancers", description = "Retorna uma lista de todos os usuários cadastrados com o perfil de FREELANCER.")
     @ApiResponse(responseCode = "200", description = "Lista de freelancers recuperada com sucesso")
     @GetMapping("/freelancers")
     public ResponseEntity<List<UserResponse>> getAllFreelancers() {
-        return ResponseEntity.ok(userService.getAllFreelancers());
+        return ResponseEntity.ok(userService.findAllFreelancers());
     }
 
     @Operation(summary = "Deletar um usuário", description = "Remove um usuário do sistema pelo seu ID.")

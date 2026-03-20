@@ -27,7 +27,7 @@ public class UserService {
     @Transactional
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResourceAlreadyExistsException("Email já cadastrado");
+            throw new ResourceAlreadyExistsException("Usuario com o Email: " + request.getEmail() + " já cadastrado");
         }
 
         User user = User.builder()
@@ -44,19 +44,19 @@ public class UserService {
 
     public User getEntityById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com o ID: " + id + "não encontrado"));
     }
 
     public User getEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com o Email: " + email + " nao encontrado"));
     }
 
-    public UserResponse getById(Long id) {
+    public UserResponse findById(Long id) {
         return toResponse(getEntityById(id));
     }
 
-    public List<UserResponse> getAllFreelancers() {
+    public List<UserResponse> findAllFreelancers() {
         return userRepository.findAll().stream()
                 .filter(u -> u.getUserType().name().equals("FREELANCER"))
                 .map(this::toResponse)
@@ -76,7 +76,7 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com o ID: " + id + "não encontrado"));
 
         userRepository.delete(user);
     }
