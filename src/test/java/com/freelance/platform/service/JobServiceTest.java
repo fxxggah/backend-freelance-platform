@@ -334,7 +334,7 @@ class JobServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> jobService.getEntityById(idInexistente));
 
-        assertEquals("Job com o ID: 1não encontrado", exception.getMessage());
+        assertEquals("Job com o ID: " + idInexistente +" não encontrado", exception.getMessage());
 
         verify(jobRepository).findById(idInexistente);
     }
