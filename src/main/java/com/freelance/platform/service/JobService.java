@@ -43,21 +43,21 @@ public class JobService {
 
     public Job getEntityById(Long id) {
         return jobRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Job não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job com o ID: " + id + "não encontrado"));
     }
 
-    public JobResponse getById(Long id) {
+    public JobResponse findById(Long id) {
         return toResponse(getEntityById(id));
     }
 
-    public List<JobResponse> getAllOpen() {
-        return jobRepository.findByStatusOrderByCreatedAtDesc(JobStatus.OPEN)
+    public List<JobResponse> findAllOpen() {
+        return jobRepository.findByStatusOrderByCreated(JobStatus.OPEN)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<JobResponse> getByEmployer(Long employerId) {
+    public List<JobResponse> findByEmployer(Long employerId) {
         return jobRepository.findByEmployerId(employerId)
                 .stream()
                 .map(this::toResponse)
@@ -88,8 +88,7 @@ public class JobService {
 
     @Transactional
     public void delete(Long id) {
-        Job job = jobRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Job não encontrado"));
+        Job job = getEntityById(id);
 
         jobRepository.delete(job);
     }

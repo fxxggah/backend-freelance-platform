@@ -45,21 +45,21 @@ public class JobController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<JobResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.getById(id));
+        return ResponseEntity.ok(jobService.findById(id));
     }
 
     @Operation(summary = "Listar vagas abertas", description = "Retorna uma lista de todas as vagas que estão com o status OPEN.")
     @ApiResponse(responseCode = "200", description = "Lista de vagas abertas recuperada com sucesso")
     @GetMapping("/open")
     public ResponseEntity<List<JobResponse>> getAllOpen() {
-        return ResponseEntity.ok(jobService.getAllOpen());
+        return ResponseEntity.ok(jobService.findAllOpen());
     }
 
     @Operation(summary = "Listar vagas por empregador", description = "Retorna todas as vagas criadas por um empregador específico.")
     @ApiResponse(responseCode = "200", description = "Lista de vagas do empregador recuperada com sucesso")
     @GetMapping("/employer/{employerId}")
     public ResponseEntity<List<JobResponse>> getByEmployer(@PathVariable Long employerId) {
-        return ResponseEntity.ok(jobService.getByEmployer(employerId));
+        return ResponseEntity.ok(jobService.findByEmployer(employerId));
     }
 
     @Operation(summary = "Atualizar status da vaga", description = "Atualiza o status de uma vaga (ex: de OPEN para CLOSED).")
