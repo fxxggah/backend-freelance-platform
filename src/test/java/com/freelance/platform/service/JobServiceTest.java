@@ -6,6 +6,7 @@ import com.freelance.platform.domain.model.User;
 import com.freelance.platform.domain.repository.JobRepository;
 import com.freelance.platform.dto.request.JobRequest;
 import com.freelance.platform.dto.response.JobResponse;
+import com.freelance.platform.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -320,4 +321,22 @@ class JobServiceTest {
         verify(jobRepository).findById(job.getId());
         verify(jobRepository).delete(job);
     }
+
+    // Exceptions Testes
+
+    @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando um job nao existir")
+    void deveLancarExcecaoQuandoUsuarioNaoExistirPeloId() {
+
+        Long idInexistente = 1L;
+
+        when(jobRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> jobService.getEntityById(idInexistente));
+
+        assertEquals("Job com o ID: 1não encontrado", exception.getMessage());
+
+        verify(jobRepository).findById(idInexistente);
+    }
+
 }
