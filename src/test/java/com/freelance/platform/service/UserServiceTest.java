@@ -2,8 +2,11 @@ package com.freelance.platform.service;
 
 import com.freelance.platform.domain.model.User;
 import com.freelance.platform.domain.repository.UserRepository;
+import com.freelance.platform.dto.request.LoginRequest;
 import com.freelance.platform.dto.request.RegisterRequest;
 import com.freelance.platform.dto.response.UserResponse;
+import com.freelance.platform.exception.ResourceAlreadyExistsException;
+import com.freelance.platform.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +23,7 @@ import static com.freelance.platform.domain.enums.UserType.EMPLOYER;
 import static com.freelance.platform.domain.enums.UserType.FREELANCER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -34,6 +36,8 @@ class UserServiceTest {
 
     @InjectMocks
     UserService userService;
+
+    // CRUD Testes
 
     @Test
     @DisplayName("Deve registrar um novo usuário com sucesso")
@@ -199,4 +203,91 @@ class UserServiceTest {
         verify(userRepository).delete(user);
 
     }
+
+
+    // Exceptions testes
+
+    @Test
+    @DisplayName("Deve lançar ResourceAlreadyExistsException quando o e-mail já estiver cadastrado")
+    void deveLancarExcecaoQuandoEmailJaExistir() {
+
+        RegisterRequest request = RegisterRequest.builder()
+                .email("gabriel@gmail.com")
+                .name("Gabriel")
+                .password("gabriel")
+                .userType(EMPLOYER)
+                .build();
+
+        when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
+
+        ResourceAlreadyExistsException exception = assertThrows(ResourceAlreadyExistsException.class, () -> {
+            userService.register(request);
+        });
+
+        assertEquals("Usuario com o Email: " + request.getEmail() + " já cadastrado", exception.getMessage());
+
+        verify(userRepository, never()).save(any(User.class));
+        verify(userRepository, times(1)).existsByEmail(request.getEmail());
+
+
+    }
+
+
+    @Test
+    @DisplayName("Deve lançar ResourceNotFoundException ao buscar entidade por ID inexistente")
+    void deveLancarExcecaoQuandoIDNaoExiste() {
+
+        Long idInexistente = 1L;
+
+        when(userRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userService.getEntityById(idInexistente);
+        });
+
+        assertEquals("Usuário com o ID: " + idInexistente + "não encontrado", exception.getMessage());
+
+        verify(userRepository, times(1)).findById(idInexistente);
+
+    }
+
+    @Test
+    @DisplayName("Deve lançar ResourceNotFoundException ao buscar entidade por e-mail inexistente")
+    void deveLancarExcecaoQuandoEmailNaoExistir() {
+
+        String emailInexistente = "gabriel@gmail.com";
+
+
+        when(userRepository.findByEmail(emailInexistente)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userService.getEntityByEmail(emailInexistente);
+        });
+
+        assertEquals("Usuário com o Email: " + emailInexistente + " nao encontrado", exception.getMessage());
+
+        verify(userRepository, times(1)).findByEmail(emailInexistente);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
