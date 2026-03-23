@@ -43,7 +43,7 @@ public class JobService {
 
     public Job getEntityById(Long id) {
         return jobRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Job com o ID: " + id + "não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job com o ID: " + id + " não encontrado"));
     }
 
     public JobResponse findById(Long id) {
