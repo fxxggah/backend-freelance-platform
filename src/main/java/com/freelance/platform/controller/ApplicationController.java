@@ -40,14 +40,14 @@ public class ApplicationController {
     @ApiResponse(responseCode = "200", description = "Lista de candidaturas recuperada com sucesso")
     @GetMapping("/job/{jobId}")
     public ResponseEntity<List<ApplicationResponse>> getByJob(@PathVariable Long jobId) {
-        return ResponseEntity.ok(applicationService.getByJob(jobId));
+        return ResponseEntity.ok(applicationService.findByJob(jobId));
     }
 
     @Operation(summary = "Listar candidaturas por freelancer", description = "Retorna todas as vagas às quais um freelancer específico se candidatou.")
     @ApiResponse(responseCode = "200", description = "Lista de candidaturas do freelancer recuperada com sucesso")
     @GetMapping("/freelancer/{freelancerId}")
     public ResponseEntity<List<ApplicationResponse>> getByFreelancer(@PathVariable Long freelancerId) {
-        return ResponseEntity.ok(applicationService.getByFreelancer(freelancerId));
+        return ResponseEntity.ok(applicationService.findByFreelancer(freelancerId));
     }
 
     @Operation(summary = "Atualizar status da candidatura", description = "Atualiza o status de uma candidatura (ex: PENDING, ACCEPTED, REFUSED, CANCELLED).")

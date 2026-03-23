@@ -8,6 +8,7 @@ import com.freelance.platform.domain.repository.ApplicationRepository;
 import com.freelance.platform.dto.response.ApplicationResponse;
 import com.freelance.platform.exception.BusinessException;
 import com.freelance.platform.exception.ResourceNotFoundException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,9 @@ public class ApplicationService {
 
     @Transactional
     public ApplicationResponse apply(Long jobId, Long freelancerId) {
+
         Job job = jobService.getEntityById(jobId);
+
         User freelancer = userService.getEntityById(freelancerId);
 
         if (applicationRepository.findByJobIdAndFreelancerId(jobId, freelancerId).isPresent()) {
@@ -47,14 +50,14 @@ public class ApplicationService {
         return toResponse(application);
     }
 
-    public List<ApplicationResponse> getByJob(Long jobId) {
+    public List<ApplicationResponse> findByJob(Long jobId) {
         return applicationRepository.findByJobId(jobId)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<ApplicationResponse> getByFreelancer(Long freelancerId) {
+    public List<ApplicationResponse> findByFreelancer(Long freelancerId) {
         return applicationRepository.findByFreelancerId(freelancerId)
                 .stream()
                 .map(this::toResponse)
@@ -72,7 +75,7 @@ public class ApplicationService {
         return toResponse(application);
     }
 
-    private ApplicationResponse toResponse(Application application) {
+    private ApplicationResponse toResponse(@NotNull Application application) {
         return ApplicationResponse.builder()
                 .id(application.getId())
                 .jobId(application.getJob().getId())
