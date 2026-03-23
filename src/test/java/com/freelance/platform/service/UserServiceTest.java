@@ -269,5 +269,5 @@ class UserServiceTest {
         verify(userRepository, times(1)).findByEmail(emailInexistente);
 
     }
-    
+
 }

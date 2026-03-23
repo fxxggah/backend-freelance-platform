@@ -64,10 +64,14 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
+    public Application getEntityById(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidatura com o ID: "+ id +" não encontrada"));
+    }
+
     @Transactional
     public ApplicationResponse updateStatus(Long applicationId, ApplicationStatus status) {
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidatura não encontrada"));
+        Application application = getEntityById(applicationId);
 
         application.setStatus(status);
         application = applicationRepository.save(application);
@@ -89,8 +93,7 @@ public class ApplicationService {
 
     @Transactional
     public void delete(Long id) {
-        Application application = applicationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Application não encontrada"));
+        Application application = getEntityById(id);
 
         applicationRepository.delete(application);
     }

@@ -8,6 +8,8 @@ import com.freelance.platform.domain.model.Job;
 import com.freelance.platform.domain.model.User;
 import com.freelance.platform.domain.repository.ApplicationRepository;
 import com.freelance.platform.dto.response.ApplicationResponse;
+import com.freelance.platform.exception.BusinessException;
+import com.freelance.platform.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +40,8 @@ class ApplicationServiceTest {
 
     @InjectMocks
     private ApplicationService applicationService;
+
+    // CRUD Testes
 
     @Test
     @DisplayName("Deve registrar a candidatura de um freelancer em um job com sucesso")
@@ -327,4 +331,80 @@ class ApplicationServiceTest {
         verifyNoMoreInteractions(applicationRepository);
 
     }
+
+    // Exceptions Testes
+
+    @Test
+    @DisplayName("Deve lancar BusinessException quando aplicacao ja existir")
+    void deveLancarExcecaoQuandoAplicacaoJaExiste() {
+
+        User freelancer = User.builder()
+                .id(1L)
+                .name("Joao")
+                .email("joao123@gmail.com")
+                .password("joao123")
+                .userType(UserType.FREELANCER)
+                .build();
+
+        User employer = User.builder()
+                .id(2L)
+                .name("Gabriel")
+                .email("gabriel@gmail.com")
+                .password("gabriel")
+                .userType(UserType.EMPLOYER)
+                .build();
+
+        Job job = Job.builder()
+                .id(1L)
+                .title("Dev Java")
+                .description("Criar uma API REST")
+                .status(JobStatus.OPEN)
+                .employer(employer)
+                .budget(new BigDecimal("5000"))
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Application application = Application.builder()
+                .id(1L)
+                .job(job)
+                .freelancer(freelancer)
+                .status(ApplicationStatus.PENDING)
+                .build();
+
+        when(jobService.getEntityById(job.getId())).thenReturn(job);
+        when(userService.getEntityById(freelancer.getId())).thenReturn(freelancer);
+        when(applicationRepository.findByJobIdAndFreelancerId(job.getId(), freelancer.getId()))
+
+                .thenReturn(Optional.of(application));
+
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            applicationService.apply(job.getId(), freelancer.getId());
+        });
+
+        assertEquals("Você já se candidatou a este job", exception.getMessage());
+        verify(applicationRepository, never()).save(any());
+
+
+    }
+
+    @Test
+    @DisplayName("Deve lancar ResourceNotFoundException quando a aplicacao nao existir")
+    void deveLancarExcecaoQuandoAplicacaoNaoExitir() {
+
+        Long idInexistente = 1L;
+
+        when(applicationRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            applicationService.updateStatus(idInexistente, ApplicationStatus.ACCEPTED);
+        });
+
+        assertEquals("Candidatura com o ID: "+ idInexistente + " não encontrada", exception.getMessage());
+
+        verify(applicationRepository, never()).save(any());
+
+
+    }
+
+
 }
