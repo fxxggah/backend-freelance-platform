@@ -36,6 +36,8 @@ class JobServiceTest {
     @InjectMocks
     JobService jobService;
 
+    // CRUD Testes
+
     @Test
     @DisplayName("Deve criar um novo job com sucesso")
     void deveCriarUmJob() {

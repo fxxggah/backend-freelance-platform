@@ -68,6 +68,8 @@ class UserServiceTest {
         verify(passwordEncoder).encode(user.getPassword());
     }
 
+    // CRUD Testes
+
     @Test
     @DisplayName("Deve retornar usuário pelo ID")
     void deveRetornarUsuarioPeloId() {
@@ -205,7 +207,7 @@ class UserServiceTest {
     }
 
 
-    // Exceptions testes
+    // Exceptions Testes
 
     @Test
     @DisplayName("Deve lançar ResourceAlreadyExistsException quando o e-mail já estiver cadastrado")

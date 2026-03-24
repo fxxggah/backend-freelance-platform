@@ -402,9 +402,5 @@ class ApplicationServiceTest {
         assertEquals("Candidatura com o ID: "+ idInexistente + " não encontrada", exception.getMessage());
 
         verify(applicationRepository, never()).save(any());
-
-
     }
-
-
 }
