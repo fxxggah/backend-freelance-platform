@@ -82,7 +82,7 @@ public class JobService {
                 .employerId(job.getEmployer().getId())
                 .employerName(job.getEmployer().getName())
                 .createdAt(job.getCreatedAt())
-                .applicationCount(job.getApplications() != null ? job.getApplications().size() : 0)
+                .applications(job.getApplications() != null ? job.getApplications().size() : 0)
                 .build();
     }
 

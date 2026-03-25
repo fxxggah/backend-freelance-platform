@@ -18,5 +18,5 @@ public class JobResponse {
     private Long employerId;
     private String employerName;
     private LocalDateTime createdAt;
-    private Integer applicationCount;
+    private Integer applications;
 }
