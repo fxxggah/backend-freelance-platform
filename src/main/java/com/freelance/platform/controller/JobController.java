@@ -70,8 +70,8 @@ public class JobController {
     })
     @PatchMapping("/{id}/status")
     public ResponseEntity<JobResponse> updateStatus(@PathVariable Long id,
-                                                    @RequestParam String status) { // Mude de JobStatus para String
-        return ResponseEntity.ok(jobService.updateStatus(id, JobStatus.valueOf(status.toUpperCase())));
+                                                    @RequestParam JobStatus status) {
+        return ResponseEntity.ok(jobService.updateStatus(id, JobStatus.valueOf(status.name())));
     }
     @Operation(summary = "Deletar uma vaga", description = "Remove uma vaga do sistema pelo seu ID.")
     @ApiResponses(value = {
