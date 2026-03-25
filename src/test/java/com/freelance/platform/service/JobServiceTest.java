@@ -183,7 +183,7 @@ class JobServiceTest {
                 .employer(user)
                 .build();
 
-        when(jobRepository.findByStatusOrderByCreated(JobStatus.OPEN)).thenReturn(List.of(jobOne, jobTwo));
+        when(jobRepository.findAllByOrderByCreatedAtDesc(JobStatus.OPEN)).thenReturn(List.of(jobOne, jobTwo));
 
         List<JobResponse> result = jobService.findAllOpen();
 
@@ -202,7 +202,7 @@ class JobServiceTest {
         assertEquals(jobOne.getEmployer().getId(), result.get(0).getEmployerId());
         assertEquals(jobTwo.getEmployer().getId(), result.get(1).getEmployerId());
 
-        verify(jobRepository).findByStatusOrderByCreated(JobStatus.OPEN);
+        verify(jobRepository).findAllByOrderByCreatedAtDesc(JobStatus.OPEN);
 
     }
 

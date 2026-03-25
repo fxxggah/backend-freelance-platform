@@ -51,7 +51,7 @@ public class JobService {
     }
 
     public List<JobResponse> findAllOpen() {
-        return jobRepository.findByStatusOrderByCreated(JobStatus.OPEN)
+        return jobRepository.findAllByOrderByCreatedAtDesc(JobStatus.OPEN)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
