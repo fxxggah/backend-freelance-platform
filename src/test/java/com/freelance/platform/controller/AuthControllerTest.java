@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,18 +76,22 @@ class AuthControllerTest {
                 .build();
 
         when(userDetailsService.loadUserByUsername(request.getEmail())).thenReturn(userDetails);
-        when(jwtService.generateToken(request.getEmail())).thenReturn("fake-jwt-token");
+        when(jwtService.generateToken(request.getEmail())).thenReturn("jwt-token");
         when(userService.getEntityByEmail(request.getEmail())).thenReturn(user);
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("fake-jwt-token"))
+                .andExpect(jsonPath("$.token").value("jwt-token"))
                 .andExpect(jsonPath("$.type").value("Bearer"))
                 .andExpect(jsonPath("$.userId").value(1))
                 .andExpect(jsonPath("$.email").value(request.getEmail()))
                 .andExpect(jsonPath("$.name").value("Gabriel"))
                 .andExpect(jsonPath("$.role").value("EMPLOYER"));
+
+        verify(userDetailsService, times(1)).loadUserByUsername(request.getEmail());
+        verify(jwtService, times(1)).generateToken(request.getEmail());
+        verify(userService, times(1)).getEntityByEmail(request.getEmail());
     }
 }
