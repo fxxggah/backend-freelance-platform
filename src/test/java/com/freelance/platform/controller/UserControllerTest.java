@@ -69,6 +69,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value(response.getName()))
                 .andExpect(jsonPath("$.email").value(response.getEmail()))
                 .andExpect(jsonPath("$.userType").value(response.getUserType().name()));
+
+        verify(userService, times(1)).register(any(RegisterRequest.class));
     }
 
     @Test
@@ -93,6 +95,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value(response.getName()))
                 .andExpect(jsonPath("$.email").value(response.getEmail()))
                 .andExpect(jsonPath("$.userType").value(response.getUserType().name()));
+
+        verify(userService, times(1)).findById(id);
     }
 
     @Test
@@ -128,6 +132,8 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[1].name").value(responseTwo.getName()))
                 .andExpect(jsonPath("$[1].email").value(responseTwo.getEmail()))
                 .andExpect(jsonPath("$[1].userType").value(responseTwo.getUserType().name()));
+
+        verify(userService, times(1)).findAllFreelancers();
     }
 
     @Test
@@ -140,6 +146,8 @@ class UserControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).delete(any(Long.class));
+
+        verify(userService, times(1)).delete(1L);
 
     }
 }
