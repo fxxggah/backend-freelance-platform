@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,6 +67,8 @@ class ApplicationControllerTest {
                 .andExpect(jsonPath("$.jobTitle").value("Desenvolvedor Java"))
                 .andExpect(jsonPath("$.freelancerName").value("Gabriel"));
 
+        verify(applicationService, times(1)).apply(jobId, freelancerId);
+
     }
 
     @Test
@@ -109,6 +110,8 @@ class ApplicationControllerTest {
                 .andExpect(jsonPath("$[0].freelancerId").value(freelancerOneId))
                 .andExpect(jsonPath("$[1].jobId").value(jobId))
                 .andExpect(jsonPath("$[1].freelancerId").value(freelancerTwoId));
+
+        verify(applicationService, times(1)).findByJob(jobId);
     }
 
     @Test
@@ -150,6 +153,8 @@ class ApplicationControllerTest {
                 .andExpect(jsonPath("$[0].jobId").value(jobOneId))
                 .andExpect(jsonPath("$[1].freelancerId").value(freelancerId))
                 .andExpect(jsonPath("$[1].jobId").value(jobTwoId));
+
+        verify(applicationService, times(1)).findByFreelancer(freelancerId);
     }
 
     @Test
@@ -180,6 +185,8 @@ class ApplicationControllerTest {
                 .andExpect(jsonPath("$.jobId").value(jobId))
                 .andExpect(jsonPath("$.freelancerId").value(freelancerId))
                 .andExpect(jsonPath("$.status").value(ApplicationStatus.ACCEPTED.name()));
+
+        verify(applicationService, times(1)).updateStatus(1L, ApplicationStatus.ACCEPTED);
     }
 
     @Test
@@ -190,5 +197,7 @@ class ApplicationControllerTest {
 
         mockMvc.perform(delete("/api/applications/{id}", 1L))
                 .andExpect(status().isNoContent());
+
+        verify(applicationService, times(1)).delete(1L);
     }
 }
