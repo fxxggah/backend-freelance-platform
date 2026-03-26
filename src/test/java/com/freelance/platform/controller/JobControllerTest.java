@@ -22,9 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -83,6 +81,8 @@ class JobControllerTest {
                 .andExpect(jsonPath("$.budget").value(response.getBudget().doubleValue()))
                 .andExpect(jsonPath("$.employerId").value(response.getEmployerId()))
                 .andExpect(jsonPath("$.employerName").value(response.getEmployerName()));
+
+        verify(jobService, times(1)).create(request, employerId);
     }
 
     @Test
@@ -114,6 +114,8 @@ class JobControllerTest {
                 .andExpect(jsonPath("$.budget").value(response.getBudget().doubleValue()))
                 .andExpect(jsonPath("$.employerId").value(response.getEmployerId()))
                 .andExpect(jsonPath("$.employerName").value(response.getEmployerName()));
+
+        verify(jobService, times(1)).findById(response.getId());
     }
 
     @Test
@@ -165,6 +167,8 @@ class JobControllerTest {
                 .andExpect(jsonPath("$[1].budget").value(responseTwo.getBudget().doubleValue()))
                 .andExpect(jsonPath("$[1].employerId").value(responseTwo.getEmployerId()))
                 .andExpect(jsonPath("$[1].employerName").value(responseTwo.getEmployerName()));
+
+        verify(jobService, times(1)).findAllOpen();
 
     }
 
@@ -218,6 +222,8 @@ class JobControllerTest {
                 .andExpect(jsonPath("$[1].employerId").value(responseTwo.getEmployerId()))
                 .andExpect(jsonPath("$[1].employerName").value(responseTwo.getEmployerName()));
 
+        verify(jobService, times(1)).findByEmployer(employerId);
+
     }
 
     @Test
@@ -247,6 +253,8 @@ class JobControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(response.getId()))
                 .andExpect(jsonPath("$.status").value(response.getStatus().toString()));
+
+        verify(jobService, times(1)).updateStatus(jobId, JobStatus.CLOSED);
     }
 
     @Test
@@ -257,6 +265,8 @@ class JobControllerTest {
 
         mockMvc.perform(delete("/api/jobs/{id}", 1L))
                 .andExpect(status().isNoContent());
+
+        verify(jobService, times(1)).delete(1L);
 
     }
 }
